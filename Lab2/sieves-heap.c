@@ -29,7 +29,7 @@ void print_number(int a){
 
 
 void print_sieves(int n){
-    int arr[n];
+    int *arr = (int*) malloc(sizeof(int)*n);
     int i = 2;
     int sqrtn = sqrt((int)n);
     while (i < n){ //fill array
@@ -53,18 +53,14 @@ void print_sieves(int n){
         if(arr[y] != 0){
             print_number(y);
         }
-    }   
+    }
+    free (arr);   
 }
 
 // 'argc' contains the number of program arguments, and
 // 'argv' is an array of char pointers, where each
 // char pointer points to a null-terminated string.
-/*
-int main(void){
-    print_sieves(20);
-    return 0;
-}
-*/
+
 int main(int argc, char *argv[]){
   if(argc == 2)
     print_sieves(atoi(argv[1]));
@@ -72,5 +68,3 @@ int main(int argc, char *argv[]){
     printf("Please state an interger number.\n");
   return 0;
 }
-
- 
