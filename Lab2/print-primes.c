@@ -1,16 +1,30 @@
-/*
- print-prime.c
- By David Broman.
- Last modified: 2015-09-15
- This file is in the public domain.
-*/
-
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #define COLUMNS 6
 
+
+int counter = 0;
+
+int is_prime(int n){
+  int i = 2;
+  while (i < n){
+    if (n%i == 0){
+      return 0;
+    }
+    i++;
+  }
+  return 1;
+}
+
+void print_number(int a){  
+  if (counter >= COLUMNS){
+    printf("\n");
+    counter = 0;
+  }
+  printf("%10d ", a);
+  counter++;
+}
 
 void print_primes(int n){
   // Should print out all prime numbers less than 'n'
@@ -18,17 +32,13 @@ void print_primes(int n){
   // the number of columns is stated in the define
   // COLUMNS
 
-  printf("%10d ", 2);
-  printf("%10d ", 3);
-  printf("%10d ", 5);
-  printf("%10d ", 7);
-  printf("%10d ", 11);
-  printf("%10d ", 13);
-  printf("\n");
-  printf("%10d ", 17);
-  printf("%10d ", 19);
-
-  printf("\n");
+  int i = 2;
+  while (i < n){
+    if(is_prime(i)){
+      print_number(i);
+    }
+    i++;
+  }
 }
 
 // 'argc' contains the number of program arguments, and
