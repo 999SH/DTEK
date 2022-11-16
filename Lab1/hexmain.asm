@@ -4,8 +4,9 @@
 
 	.text
 main:
-	li	$a0,0		# change this to test different values
-
+	li	$a0, 3		# change this to test different values
+	
+	
 	jal	hexasc		# call hexasc
 	nop			# delay slot filler (just in case)	
 
@@ -19,4 +20,18 @@ stop:	j	stop		# stop after one run
 
   # You can write your own code for hexasc here
   #
+  
+hexasc:
+        move	$t0 ,$a0                        # 0x30 = 0 || 0x39 = 9. 0x41 A || 0x46 = F
+        bge $t0, 0xA large 
+        addi $t0, $t0, 0x30 
+        
+        j return 
 
+large: 
+       addi $t0, $t0, 0x37
+       
+return:
+       move $v0, $t0   
+       jr $ra
+       
