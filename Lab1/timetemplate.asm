@@ -32,7 +32,7 @@ main:
 	jal	tick       #Tick time
 	nop
 	# call your function time2string
-	la	$a0,timstr  #Load adress of mytime into a0 
+	la	$a0,timstr  #Load adress of timestr into a0 
 	la	$t0,mytime  #Load adress of mytime into t0
 	lw	$a1,0($t0)  #Dereference t0 and load into a1
 	jal	time2string
@@ -77,8 +77,58 @@ tiend:	sw	$t0,0($a0)	# save updated result
   # you can write your code for subroutine "hexasc" below this line
   #
 
+
+              
+                     
+time2string:
+
+PUSH ($ra)
+
+#Byte 0
+andi $t0, $a1, 0xF000   # Mask 1111 0000 0000 0000 
+srl  $t0, $t0, 12       #Shift t0 right in order to get byte into LSB scope for hexasc
+move $v0, $t0           #move result into v0 
+jal hexasc                                 
+sb $v0,0($a0)           #Store byte
+
+
+#Byte 1
+andi $t0, $a1, 0x0F00 # Mask 0000 1111 0000 0000 
+srl  $t0, $t0,  8     #Shift t0 right in order to get byte into LSB scope for hexasc
+move $v0, $t0         #move result into v0 
+jal hexasc
+sb $v0,1($a0)         #Store byte
+
+
+#Colon 
+li $t0, 0x3A
+sb $t0,2($a0)         #Store byte
+
+
+#Byte 2
+andi $t0, $a1, 0x00F0 # Mask  0000 0000 1111 0000 
+srl  $t0, $t0, 4      #Shift t0 right in order to get byte into LSB scope for hexasc
+move $v0, $t0         #move result into v0 
+jal hexasc
+sb $v0,3($a0)         #Store byte
+
+
+#Byte 3
+andi $t0, $a1, 0x000F # Mask  0000 0000 0000 1111
+srl  $t0, $t0, 0      #Shift t0 right in order to get byte into LSB scope for hexasc
+move $v0, $t0         #move result into v0 
+jal hexasc
+sb $v0,4($a0)         #Store byte
+
+#NULL byte
+li $t0, 0x00
+sb $t0,5($a0)         #Store byte
+
+POP ($ra)
+
+#hexasc
 hexasc:
-        move	$t0 ,$a0    # 0x30 = 0 ||Â 0x39 = 9. 0x41 A || 0x46 = F
+        move	$t0 ,$v0    # 0x30 = 0 ||A 0x39 = 9. 0x41 A || 0x46 = F
         bge $t0, 0xA large 
         addi $t0, $t0, 0x30 
         
@@ -90,51 +140,24 @@ large:
 return:
        move $v0, $t0   
        jr $ra    
-              
-                     
-time2string:
+      
+#improved delay
+delay:
+#DELAY CONSTANT 
+li $t2, 4711
+li $t0, 1000   #this is MS 
+delayloop:
+     beqz $t0,delayreturn 
+     subi $t0, $t0, 1     
+for:
+     addi $t1, $t1, 1
+     blt $t1, $t2 for     
+     j delayloop  
+     
+delayreturn:
+            jr $ra                             
 
-PUSH($a0)
-PUSH ($ra)
-
-#Byte 0
-srl $t0, $a1, 0        #Shift a1 left in order to get byte 1 into LSB scope for hexasc
-andi $a0, $t0, 0x9  #Load LSB of a1 into a0
-jal hexasc
-move $s0, $v0
-
-#Byte 1
-srl $t0, $a1, 4        #Shift a1 left in order to get byte 1 into LSB scope for hexasc
-andi $a0, $t0, 0x5  #Load LSB of a1 into a0
-jal hexasc
-move $s1, $v0
-
-#Byte 2
-srl $t0, $a1, 8        #Shift a1 left in order to get byte 1 into LSB scope for hexasc
-andi $a0, $t0, 0x9  #Load LSB of a1 into a0
-jal hexasc
-move $s2, $v0
-
-#Byte 3
-srl $t0, $a1, 12        #Shift a1 left in order to get byte 1 into LSB scope for hexasc
-andi $a0, $t0, 0x5  #Load LSB of a1 into a0
-jal hexasc
-move $s3, $v0  #Store lsb into s3
-
-POP ($ra)
-POP ($a0)
-
-sb $s0,3($a0)  #store everything into adress at a0
-sb $s1,2($a0)
-sb $s2,1($a0)
-sb $s3,0($a0)
-
-
-                                                                                                                                                      
-delay: 
-      jr $ra 
-      nop
-
+#Stop just because 
 stop: j stop
       nop
 
