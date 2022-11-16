@@ -4,7 +4,7 @@
 
 	.text
 main:
-	li	$a0, 3		# change this to test different values
+	li	$a0, 15		# change this to test different values
 	
 	
 	jal	hexasc		# call hexasc
