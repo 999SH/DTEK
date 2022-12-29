@@ -2,7 +2,7 @@
 
 void testing(int *x)
 {               
-    *x = *x * 2; // Dereference, then double
+    *x = *x * 2; // Dereference, then double, test
 }
 
 int main(void)
