@@ -8,4 +8,3 @@ loop:	beq  $v0,$a0,done # test, jump to done.
         addi $v0,$v0,-3   # decrement. Loops twice.
         beq  $0,$0,loop   # emulating an unconditional jump
 done:	add  $0,$0,$0	  # NOP	
-	
