@@ -31,7 +31,7 @@ void user_isr( void )
 void labinit( void )
 {
   *TE = (*TE & 0xFF00);
-  *PE = (*TE & 0x0);
+  *PE = (*PE & 0x0);
   TRISD = (TRISD | 0xFE0);
   return;
 }
@@ -39,15 +39,7 @@ void labinit( void )
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
-  delay( 1000 );
-  time2string( textstring, mytime );
-  display_string( 3, textstring );
-  display_update();
-  tick( &mytime );
-  display_image(96, icon);
-  *PE = *PE+1;
-  
-  
+
   if (0x4 & getbtns())
   {
     mytime = 0x0FFF & mytime;
@@ -63,5 +55,18 @@ void labwork( void )
     mytime = 0xFF0F & mytime; 
     mytime = (getsw() << 4 | mytime); 
   }
+ 
+  delay( 1000 );
+  time2string( textstring, mytime );
+  display_string( 3, textstring );
+  display_update();
+  tick( &mytime );
+  display_image(96, icon);
+  *PE = *PE+1;
+  if (*PE == 256){
+    *PE = 0;
+  }
   
+  
+  return;
 }

@@ -24,7 +24,7 @@ main:
 	syscall
 	nop
 	# wait a little 
-	li	$a0,2      #Load 2 into a0. Used for? 
+	li	$a0,1000      #Load 2 into a0. Used for? 
 	jal	delay     
 	nop
 	# call tick
@@ -137,7 +137,6 @@ hexasc:
         move	$t0 ,$v0    # 0x30 = 0 ||A�0x39 = 9. 0x41 A || 0x46 = F
         bge $t0, 0xA large 
         addi $t0, $t0, 0x30 
-        
         j return 
         nop
 
@@ -151,21 +150,26 @@ return:
       
 #improved delay
 delay:
-li $t0, 1000   #this is MS 
-delayloop:
-     beqz $t0,delayreturn 
+PUSH ($ra)
+nop
+add $t1, $0, $0
+
+while:
+     blez $a0, delayreturn 
      nop
-     addi $t0, $t0, -1     
+     addi $a0, $a0, -1     
 for:
      addi $t1, $t1, 1
-     bge $t1, 50000, delayloop #constant
+     bge $t1, 4700, while #constant
      nop     
      j for
      nop  
      
 delayreturn:
-            jr $ra
-            nop                             
+	POP ($ra)
+	nop
+        jr $ra
+        nop                             
 
 #Stop just because 
 stop: j stop
