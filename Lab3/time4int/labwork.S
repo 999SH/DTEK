@@ -26,15 +26,7 @@ mytime:	.word 0x5957
 timstr:	.ascii "text more text lots of text\0"
 .globl time2string
 .globl delay
-.globl enable_interrupt
 .text
-
-
-enable_interrupt:
-  ei
-  jr $ra
-  nop
-
 
 
 time2string:
@@ -107,24 +99,31 @@ return:
        nop
 
 #improved delay
-#delay:
-#add $t1, $0, $0
-#li $t0, 1000   #this is MS 
-#delayloop:
-#     beqz $t0,delayreturn 
-#     nop
-#     addi $t0, $t0, -1     
-#for:
-#     addi $t1, $t1, 1
-#     bge $t1, 2700000, delayloop #Constant
-#     nop
-#     j for
-#     nop  
-#     
-#delayreturn:
-#            jr $ra   
-#            nop   
-            
+delay:
+add $t1, $0, $0
+addi $t0, $0, -1
+PUSH $ra
+nop    
+ 
+while:
+	BLEZ $a0, delayreturn 
+	nop
+	add $a0, $a0, $t0    
+
+for:
+     addi $t1, $t1, 1
+     BGE $t1, 2700000, while
+     nop     
+     j for
+     nop  
+     
+delayreturn:
+	POP $ra
+	nop
+  jr $ra
+  nop  
+                          
+       
 #Stop just because
 stop: j stop
       nop

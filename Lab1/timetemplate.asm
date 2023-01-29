@@ -128,7 +128,7 @@ POP ($ra)
 
 #hexasc
 hexasc:
-        move	$t0 ,$v0    # 0x30 = 0 ||A 0x39 = 9. 0x41 A || 0x46 = F
+        move	$t0 ,$v0    # 0x30 = 0 ||Aï¿½0x39 = 9. 0x41 A || 0x46 = F
         bge $t0, 0xA large 
         addi $t0, $t0, 0x30 
         
@@ -143,20 +143,26 @@ return:
       
 #improved delay
 delay:
-#DELAY CONSTANT 
-li $t2, 4711
-li $t0, 1000   #this is MS 
-delayloop:
-     beqz $t0,delayreturn 
-     subi $t0, $t0, 1     
+PUSH ($ra)
+nop
+add $t1, $0, $0
+
+while:
+     blez $a0, delayreturn 
+     nop
+     addi $a0, $a0, -1     
 for:
      addi $t1, $t1, 1
-     blt $t1, $t2 for     
-     j delayloop  
+     bge $t1, 4700, while #constant
+     nop     
+     j for
+     nop  
      
 delayreturn:
-            jr $ra                             
-
+	POP ($ra)
+	nop
+        jr $ra
+        nop    
 #Stop just because 
 stop: j stop
       nop

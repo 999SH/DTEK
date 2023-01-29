@@ -99,28 +99,31 @@ return:
        nop
 
 #improved delay
-
-
 delay:
-PUSH $ra
 add $t1, $0, $0
-addi $t0, $a0, 0   #this is MS
-delayloop:
-    blez $t0,delayreturn
-    nop
-    addi $t0, $t0, -1
-    for:
-    addi $t1, $t1, 1
-    bge $t1, 2700000, delayloop #Constant
-    nop
-    j for
-    nop
-#
+addi $t0, $0, -1
+PUSH $ra
+nop    
+ 
+while:
+	BLEZ $a0, delayreturn 
+	nop
+	add $a0, $a0, $t0    
+
+for:
+     addi $t1, $t1, 1
+     BGE $t1, 2700000, while
+     nop     
+     j for
+     nop  
+     
 delayreturn:
-            POP $ra
-            jr $ra
-            nop
-            
+	POP $ra
+	nop
+  jr $ra
+  nop  
+                          
+       
 #Stop just because
 stop: j stop
       nop
