@@ -42,12 +42,15 @@ extern const uint8_t const icon[128];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 
+uint8_t display[512];
+
+
 /* Declare functions written by students.
    Note: Since we declare these functions here,
    students must define their functions with the exact types
    specified in the laboratory instructions. */
 /* Written as part of asm lab: delay, time2string */
-void delay(int);
+void delay( int );
 void time2string( char *, int );
 /* Written as part of i/o lab: getbtns, getsw, enable_interrupt */
 int getbtns(void);
@@ -57,3 +60,6 @@ int getbtn1(void);
 int getbtn2(void);
 int getbtn3(void);
 int getbtn4(void);
+//Declare display array
+
+#define HEIGHT 1

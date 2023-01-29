@@ -60,10 +60,9 @@ int main(void) {
 	display_string(2, "by Viktor");
 	display_string(3, "Salomonsson!");
 	display_update();
-	
-	display_image(96, icon);
 
-	quicksleep(10000000);
+	delay( 10000 );
+	
 
 	display_string(0, "Menu screen");
 	display_string(1, "osv");
@@ -71,9 +70,14 @@ int main(void) {
 	display_string(3, "Salomonsson!");
 	display_update();
 
-	display_image(96, icon);
 
-	quicksleep(20000000);
+	delay( 10000 );
+
+	display_string(0, "");
+	display_string(1, "");
+	display_string(2, "");
+	display_string(3, "");
+	display_update();
 
 	
 	gameinit(); /* Do any lab-specific initialization */

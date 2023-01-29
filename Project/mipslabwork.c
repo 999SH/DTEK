@@ -23,6 +23,7 @@ char textstring[] = "text, more text, and even more text!";
 
 int timeoutcount = 0;
 
+
 /* Interrupt Service Routine */
 void user_isr( void )
 {
@@ -45,6 +46,9 @@ void gameinit( void )
 
   return;
 }
+
+
+
 
 /* This function is called repetitively from the main program */
 void gamemain( void )
@@ -72,13 +76,21 @@ void gamemain( void )
   }
 
   if(timeoutcount == 10){
-    time2string( textstring, mytime );
-    display_string( 3, textstring );
-    display_update();
-    tick( &mytime );
-    timeoutcount = 0;
+    //time2string( textstring, mytime );
+    //display_string( 3, textstring );
+    //display_update();
+    //tick( &mytime );
+    clear();
+    display_image(0,display);
     PORTE = PORTE+1;
+    delay ( 2000 );
+    draw(64, 16);
+    draw(1, 1);
+    display_image(0,display);
+    PORTE = PORTE+1;
+    delay ( 10000 );
   }
+
   return;
 }
 
