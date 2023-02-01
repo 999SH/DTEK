@@ -327,36 +327,18 @@ char * itoaconv( int num )
 
 
 
-void draw(int x, int y){
-  int i;
-  int byte;
-  int row = 128;
-  
-  //row 0, top left corner
-  if(y<=7){
-		byte = (y*y);
-		display[x] = (display[x]&(~byte));
-	}
-
-	// Row 1
-	if(y>7 && y<=15){
-		byte = (y - 8)*(y - 8); // do more research
-		display[x+row] = display[x+row] & (~byte);
-	}
-
-	// Row 2
-	if(y>15 && y<=23){
-		byte = (y - 16)*(y - 16);
-		display[x+row*2] = display[x+row*2] & (~byte);
-	}
-
-	// Row 3
-	if(y>23 && y<=31){
-		byte = (y - 24)*(y - 24);
-		display[x+row*3] = display[x+row*3] & (~byte);
-	}
-
-  return;
+void drawpixel(int x, int y, int state) {    //State of 1 means the pixel is turned on
+    int byteIndex = (y * 128 + x) / 8;
+    int bitIndex = (y * 128 + x) % 8;
+    if(state){
+      unsigned char mask = ~(1 << bitIndex);  //Set the bits of the masked byte to 1
+      display[byteIndex] &= mask;             //Unsigned char is one byte big, exactly the correct size
+    }
+    else{
+      unsigned char mask = 1 << bitIndex;     //set the masked bit to 1 in order to guarantee that the OR
+      display[byteIndex] |= mask;             //will produce the correct result. Dont touch any other bits
+    }
+    return;
 }
 
 void clear(){
