@@ -155,8 +155,8 @@ void display_image(int x, const uint8_t *data) {
 		
 		DISPLAY_CHANGE_TO_DATA_MODE;
 		
-		for(j = 0; j < 32*4; j++)
-			spi_send_recv(~data[i*32*4 + j]);
+		for(j = 0; j < 32; j++)
+			spi_send_recv(~data[i*32 + j]);
 	}
 }
 
@@ -322,71 +322,3 @@ char * itoaconv( int num )
    * we must add 1 in order to return a pointer to the first occupied position. */
   return( &itoa_buffer[ i + 1 ] );
 }
-
-//--------------------------------------------------------------------------------------- project
-
-
-
-void draw(int x, int y){
-  int i;
-  int byte;
-  int row = 128;
-  
-  //row 0, top left corner
-  if(y<=7){
-		byte = (y*y);
-		display[x] = (display[x]&(~byte));
-	}
-
-	// Row 1
-	if(y>7 && y<=15){
-		byte = (y - 8)*(y - 8); // do more research
-		display[x+row] = display[x+row] & (~byte);
-	}
-
-	// Row 2
-	if(y>15 && y<=23){
-		byte = (y - 16)*(y - 16);
-		display[x+row*2] = display[x+row*2] & (~byte);
-	}
-
-	// Row 3
-	if(y>23 && y<=31){
-		byte = (y - 24)*(y - 24);
-		display[x+row*3] = display[x+row*3] & (~byte);
-	}
-
-  return;
-}
-
-void clear(){
-  int i;
-  for (i = 0; i < 512; i++){
-    display[i] = 255;
-  }
-  return;
-}
-
-
-void border(){
-  int i;
-  for (i = 0; i < 512; i++){
-    display[i] = 255;
-  }
-  display[0] = 0;
-  display[127] = 0;
-  for (i = 1; i < 127; i++){
-    display[i] = 254;
-  }
-  display[128] = 0;
-  display[255] = 0;
-  display[256] = 0;
-  display[383] = 0;
-  display[384] = 0;
-  display[511] = 0;
-  for (i = 385; i < 511; i++){
-    display[i] = 127;
-  } 
-  return;
-}
- 

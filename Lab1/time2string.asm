@@ -19,12 +19,12 @@ timstr:	.ascii "text more text lots of text\0"
 	.text
 main:
 	# print timstr
-	la	$a0,timstr  #load timestr into a0 
+	la	$a0,timstr  #load timestr adress into a0 
 	li	$v0,4       #Load Print string for syscall 
 	syscall
 	nop
 	# wait a little 
-	li	$a0,1000      #Load 2 into a0. Used for? 
+	li	$a0,2      #Load 2 into a0. Used for delay
 	jal	delay     
 	nop
 	# call tick
@@ -84,83 +84,111 @@ time2string:
 
 PUSH ($ra)
 nop
+PUSH ($s0)
+nop
+
+move $s0, $a0
 
 #Byte 0
-andi $t0, $a1, 0xF000   # Mask 1111 0000 0000 0000 
-srl  $t0, $t0, 12       #Shift t0 right in order to get byte into LSB scope for hexasc
-move $v0, $t0           #move result into v0 
+andi $a0, $a1, 0xF000   # Mask 1111 0000 0000 0000 
+srl  $a0, $a0, 12       #Shift t0 right in order to get byte into LSB scope for hexasc
 jal hexasc  
 nop                               
-sb $v0,0($a0)           #Store byte
+sb $v0,0($s0)           #Store byte
 
 
 #Byte 1
-andi $t0, $a1, 0x0F00 # Mask 0000 1111 0000 0000 
-srl  $t0, $t0,  8     #Shift t0 right in order to get byte into LSB scope for hexasc
-move $v0, $t0         #move result into v0 
+andi $a0, $a1, 0x0F00 # Mask 0000 1111 0000 0000 
+srl  $a0, $a0,  8     #Shift t0 right in order to get byte into LSB scope for hexasc
 jal hexasc
 nop
-sb $v0,1($a0)         #Store byte
+sb $v0,1($s0)         #Store byte
 
 
 #Colon 
-li $t0, 0x3A
-sb $t0,2($a0)         #Store byte
+li $a0, 0x3A
+sb $a0,2($s0)         #Store byte
 
 
 #Byte 2
-andi $t0, $a1, 0x00F0 # Mask  0000 0000 1111 0000 
-srl  $t0, $t0, 4      #Shift t0 right in order to get byte into LSB scope for hexasc
-move $v0, $t0         #move result into v0 
+andi $a0, $a1, 0x00F0 # Mask  0000 0000 1111 0000 
+srl  $a0, $a0, 4      #Shift t0 right in order to get byte into LSB scope for hexasc
 jal hexasc
 nop
-sb $v0,3($a0)         #Store byte
+sb $v0,3($s0)         #Store byte
 
 
 #Byte 3
-andi $t0, $a1, 0x000F # Mask  0000 0000 0000 1111
-srl  $t0, $t0, 0      #Shift t0 right in order to get byte into LSB scope for hexasc
-move $v0, $t0         #move result into v0 
+andi $a0, $a1, 0x000F # Mask  0000 0000 0000 1111
+srl  $a0, $a0, 0      #Shift t0 right in order to get byte into LSB scope for hexasc
 jal hexasc
 nop
-sb $v0,4($a0)         #Store byte
+sb $v0,4($s0)         #Store byte
 
 #NULL byte
-li $t0, 0x00
-sb $t0,5($a0)         #Store byte
+li $a0, 0x00
+sb $a0,5($s0)         #Store byte
+
+
+#SURPRISE ASSIGNMENT
+lw $t0, 0($s0)
+li $t1, 0x303a3030
+bne $t0, $t1, skipding
+nop
+
+lb $t0, 4($s0)
+li $t1, 0x30
+bne $t0, $t1, skipding
+nop
+
+li $t0, 0x474E4944
+sw $t0, 0($s0)
+
+li $v0, 0x00
+sb $v0,4($s0)         #Store byte
+
+#________________________
+	
+skipding:
+
+POP ($s0)
+nop
 
 POP ($ra)
 nop
 
-#hexasc
+jr $ra
+nop
+
 hexasc:
-        move	$t0 ,$v0    # 0x30 = 0 ||A�0x39 = 9. 0x41 A || 0x46 = F
-        bge $t0, 0xA large 
-        addi $t0, $t0, 0x30 
+	andi $v0, $a0, 0xF    # 0x30 = 0 || 0x39 = 9. 0x41 A || 0x46 = F                   
+        bge $v0, 0xA, large 
+        nop
+        addi $v0, $v0, 0x30 
+        
         j return 
         nop
 
 large: 
-       addi $t0, $t0, 0x37
+       addi $v0, $v0, 0x37
        
 return:
-       move $v0, $t0   
-       jr $ra    
+       jr $ra
        nop
-      
+       
 #improved delay
 delay:
 PUSH ($ra)
 nop
-add $t1, $0, $0
+add $t1, $0, $0    #Reset t0
 
 while:
-     blez $a0, delayreturn 
+     blez $a0, delayreturn    #If while loop is done
      nop
-     addi $a0, $a0, -1     
+     addi $a0, $a0, -1        #Decrement ms
 for:
-     addi $t1, $t1, 1
-     bge $t1, 4700, while #constant
+     addi $t1, $t1, 1         #Increase i 
+     bge $t1, 2000, while      #constant
      nop     
      j for
      nop  

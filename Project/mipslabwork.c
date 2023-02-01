@@ -83,12 +83,15 @@ void gamemain( void )
     clear();
     display_image(0,display);
     PORTE = PORTE+1;
-    delay ( 2000 );
-    draw(64, 16);
+    delay ( 1000 );
+    draw(1, 31);
     draw(1, 1);
+    draw(127, 1);
+    draw(127, 31);
+    
     display_image(0,display);
     PORTE = PORTE+1;
-    delay ( 10000 );
+    delay ( 1000 );
   }
 
   return;

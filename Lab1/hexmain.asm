@@ -4,7 +4,7 @@
 
 	.text
 main:
-	li	$a0, 15		# change this to test different values
+	li	$a0, 17		# change this to test different values
 	
 	
 	jal	hexasc		# call hexasc
@@ -22,6 +22,7 @@ stop:	j	stop		# stop after one run
   #
   
 hexasc:
+	andi $a0, 0xF
         move	$t0 ,$a0                        # 0x30 = 0 || 0x39 = 9. 0x41 A || 0x46 = F
         bge $t0, 0xA large 
         addi $t0, $t0, 0x30 
