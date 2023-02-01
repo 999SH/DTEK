@@ -14,6 +14,13 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define WIDTH 128
+#define HEIGHT 32
+
 int mytime = 0x5957;
 
 char textstring[] = "text, more text, and even more text!";
@@ -33,8 +40,6 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void gameinit( void )
 {
-
-
   TRISE = TRISE & 0xFF00;
   PORTE = PORTE & 0x0;
   TRISD = (TRISD | 0xFE0);
@@ -44,29 +49,34 @@ void gameinit( void )
   TMR2 = 0x0;      //Reset the timer to 0
   PR2 = 31250;      //80mhz / 256 / 10
 
+  /*struct Snake snake = {
+  	.x = {64},
+  	.y = {16},
+  	.length = 1,
+	  .direction = 1,
+	};
+ */
   return;
 }
 
+/*  getsw archive 
+    mytime = (getsw() << 4 | mytime); 
+    mytime = (getsw() << 12 | mytime); 
+    mytime = (getsw() << 8 | mytime); */
 
 
-
-/* This function is called repetitively from the main program */
+/*
+This function is called repetitively from the main program */
 void gamemain( void )
 {
   if (getbtn4()){  //1000 = button 4
-    mytime = 0x0FFF & mytime;
-    mytime = (getsw() << 12 | mytime); 
   }
 
   if (getbtn3()){ //0100 = button 3
-    mytime = 0xF0FF & mytime; 
-    mytime = (getsw() << 8 | mytime); 
   }
 
   if (getbtn2())  //0010 = button 2
   {
-    mytime = 0xFF0F & mytime; 
-    mytime = (getsw() << 4 | mytime); 
   }
 
 
@@ -75,6 +85,12 @@ void gamemain( void )
     IFSCLR(0) = 256;   //reset bit 8 in IFS0
   }
 
+ /*
+  int loop;
+  for (loop = 0; loop < 512; loop++) {
+    moveSnake(&snake);
+  }
+*/
   if(timeoutcount == 10){
     //time2string( textstring, mytime );
     //display_string( 3, textstring );
@@ -84,16 +100,13 @@ void gamemain( void )
     display_image(0,display);
     PORTE = PORTE+1;
     delay ( 1000 );
-    draw(1, 31);
-    draw(1, 1);
-    draw(127, 1);
-    draw(127, 31);
-    
     display_image(0,display);
     PORTE = PORTE+1;
     delay ( 1000 );
   }
-
-  return;
 }
+ 
+  
+  
 
+// Functions -----------

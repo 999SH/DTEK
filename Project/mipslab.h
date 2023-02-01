@@ -14,6 +14,7 @@ void display_string(int line, char *s);
 void display_update(void);
 uint8_t spi_send_recv(uint8_t data);
 
+
 /* Declare lab-related functions from mipslabfunc.c */
 char * itoaconv( int num );
 void labwork(void);
@@ -62,4 +63,9 @@ int getbtn3(void);
 int getbtn4(void);
 //Declare display array
 
-#define HEIGHT 1
+struct Snake {          //Define each segment of the snake 
+  int x[512];           //X pos of snake piece
+  int y[512];           //Y pos
+  int length;           //Each segment has their own properties 
+  int direction;        //Each segment has their direction since they have to follow where the head went
+  };

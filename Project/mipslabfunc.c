@@ -8,6 +8,11 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
 /* Declare a helper function which is local to this file */
 static void num32asc( char * s, int ); 
 
@@ -22,6 +27,9 @@ static void num32asc( char * s, int );
 
 #define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
 #define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
+
+#define WIDTH 128
+#define HEIGHT 32
 
 /* quicksleep:
    A simple function to create a small delay.
@@ -327,15 +335,16 @@ char * itoaconv( int num )
 
 
 
+
 void drawpixel(int x, int y, int state) {    //State of 1 means the pixel is turned on
-    int byteIndex = (y * 128 + x) / 8;
-    int bitIndex = (y * 128 + x) % 8;
+    int byteIndex = (y/8) * 128 + x;
+    int bitIndex = y % 8;
     if(state){
-      unsigned char mask = ~(1 << bitIndex);  //Set the bits of the masked byte to 1
+      uint8_t mask = ~(1 << bitIndex);  //Set the bits of the masked byte to 1
       display[byteIndex] &= mask;             //Unsigned char is one byte big, exactly the correct size
     }
     else{
-      unsigned char mask = 1 << bitIndex;     //set the masked bit to 1 in order to guarantee that the OR
+      uint8_t mask = 1 << bitIndex;     //set the masked bit to 1 in order to guarantee that the OR
       display[byteIndex] |= mask;             //will produce the correct result. Dont touch any other bits
     }
     return;
@@ -348,7 +357,6 @@ void clear(){
   }
   return;
 }
-
 
 void border(){
   int i;
@@ -372,3 +380,29 @@ void border(){
   return;
 }
  
+void moveSnake(struct Snake *snake) {
+  int x = snake->x[snake->length - 1];
+  int y = snake->y[snake->length - 1];
+  switch (snake->direction) {
+    case 0:
+      y--;
+      break;
+    case 1:
+      x++;
+      break;
+    case 2:
+      y++;
+      break;
+    case 3:
+      x--;
+      break;
+  }
+  if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
+    // Snake hit the edge, game over
+    return;
+  }
+  drawpixel(x, y, 1);
+  snake->x[snake->length] = x;
+  snake->y[snake->length] = y;
+  snake->length++;
+}
