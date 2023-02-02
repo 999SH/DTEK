@@ -65,7 +65,7 @@ int getbtn4(void);
 
 struct Snake {          //Define each segment of the snake 
   int x[512];           //X pos of snake piece
-  int y[512];           //Y pos
+  int y[512];            //Y pos
   int length;           //Each segment has their own properties 
   int direction;        //Each segment has their direction since they have to follow where the head went
   };

@@ -10,12 +10,11 @@
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
-#include <stdlib.h>	
+
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+
 
 int main(void) {
         /*
@@ -88,17 +87,17 @@ int main(void) {
 	
 	gameinit(); /* Do any lab-specific initialization */
 
-	struct Snake snaker = {		
-  	.x = {64},
-  	.y = {16},
-  	.length = 1,
-	  .direction = 1,
-	};
-
+	struct Snake snake;
+	snake.x[0] = 64;
+	snake.y[0] = 16;
+	snake.length = 1;
+	snake.direction = 1;
+	
+    /*
 	int loop;
   	for (loop = 0; loop < 512; loop++) {
-    moveSnake(&snaker);
-  	}
+    moveSnake(&snake);
+  	} */
 
 
 	while( 1 )

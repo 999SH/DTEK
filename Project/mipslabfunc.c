@@ -8,10 +8,10 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+//#include <stdbool.h>
 
 /* Declare a helper function which is local to this file */
 static void num32asc( char * s, int ); 
