@@ -61,6 +61,14 @@ int getbtn1(void);
 int getbtn2(void);
 int getbtn3(void);
 int getbtn4(void);
+
+int getsw4(void);
+int getsw3(void);
+int getsw2(void);
+int getsw1(void);
+
+int gamedone;
+
 //Declare display array
 
 struct Snake {          //Define each segment of the snake 
@@ -69,3 +77,8 @@ struct Snake {          //Define each segment of the snake
   int length;           //Each segment has their own properties 
   int direction;        //Each segment has their direction since they have to follow where the head went
   };
+
+struct Apple {
+   int x;
+   int y;
+};

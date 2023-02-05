@@ -7,6 +7,27 @@ int getsw( void )
     return ((PORTD >> 8) & 0xF);
 }
 
+
+int getsw4( void )
+{
+    return ((PORTD >> 8) & 0x8);
+}
+
+int getsw3( void )
+{
+    return ((PORTD >> 8) & 0x4);
+}
+
+int getsw2( void )
+{
+    return ((PORTD >> 8) & 0x2);
+}
+
+int getsw1( void )
+{
+    return ((PORTD >> 8) & 0x1);
+}
+
 int getbtns( void )
 {
     return ((PORTD >> 5) & 0x7);

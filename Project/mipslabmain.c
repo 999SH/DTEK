@@ -12,10 +12,6 @@
 #include "mipslab.h"  /* Declatations for these labs */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-
-
 int main(void) {
         /*
 	  This will set the peripheral bus clock to the same frequency
@@ -60,49 +56,54 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 	
 	display_init();
+	/*
 	display_string(0, "Welcome");
 	display_string(1, "to snake");
 	display_string(2, "by Viktor");
 	display_string(3, "Salomonsson!");
 	display_update();
 
-	delay( 1000 );
+	delay( 5000 );
 	
 
-	display_string(0, "Menu screen");
-	display_string(1, "osv");
-	display_string(2, "testing ");
-	display_string(3, "Salomonsson!");
+	display_string(0, "SW4 = I-RSTRT");
+	display_string(1, "SW3 = ");
+	display_string(2, "SW2 = SUPERFAST ");
+	display_string(3, "SW1 = PAUSE ");
 	display_update();
 
+	delay( 5000 );
 
-	delay( 1000 );
-
-	display_string(0, "");
-	display_string(1, "");
-	display_string(2, "");
-	display_string(3, "");
+	display_string(0, "BTN 4 = LEFT");
+	display_string(1, "BTN 3 = RIGHT");
+	display_string(2, "BTN 2 = DOWN");
+	display_string(3, "BTN 1 = UP");
 	display_update();
 
-	
+	delay( 5000 );
+	*/
+
 	gameinit(); /* Do any lab-specific initialization */
-
-	struct Snake snake;
-	snake.x[0] = 64;
-	snake.y[0] = 16;
-	snake.length = 1;
-	snake.direction = 1;
-	
-    /*
-	int loop;
-  	for (loop = 0; loop < 512; loop++) {
-    moveSnake(&snake);
-  	} */
 
 
 	while( 1 )
 	{
-	  gamemain(); /* Do lab-specific things again and again */
+		switch (getsw1()){
+			case 0: 
+			gamemain();
+			break;
+			case 1:
+			pause();
+			break;
+		}
+		switch (gamedone){
+			case 0:
+			gamemain();
+			break;
+			case 1: 
+			gameoverfunc();
+			break;
+		}
 	}
 	return 0;
 }

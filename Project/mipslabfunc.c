@@ -8,10 +8,8 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <stdbool.h>
+#include <stdio.h>
+
 
 /* Declare a helper function which is local to this file */
 static void num32asc( char * s, int ); 
@@ -337,20 +335,20 @@ char * itoaconv( int num )
 
 
 void drawpixel(int x, int y, int state) {    //State of 1 means the pixel is turned on
-    int byteIndex = (y/8) * 128 + x;
-    int bitIndex = y % 8;
-    if(state){
-      uint8_t mask = ~(1 << bitIndex);  //Set the bits of the masked byte to 1
-      display[byteIndex] &= mask;             //Unsigned char is one byte big, exactly the correct size
+    int byte = (y/8) * 128 + x;         //Formula for calculating the byte, first calulate row using y/8,
+    int bit = y % 8;                    //Byterow * 128 in order to calculate with offset. 
+    if(state){                          //32 y cords, 8 pixels per byte. Modulo 8 chooses the correct bit in the byte      
+      uint8_t mask = ~(1 << bit);       //Sets the bit we want to turn on to 0, everything else is ANDed with 1. since 0 means on.
+      display[byte] &= mask;            //Uint_8 is one byte big, exactly the correct size
     }
     else{
-      uint8_t mask = 1 << bitIndex;     //set the masked bit to 1 in order to guarantee that the OR
-      display[byteIndex] |= mask;             //will produce the correct result. Dont touch any other bits
+      uint8_t mask = 1 << bit;     //set the masked bit to 1 in order to guarantee that the OR
+      display[byte] |= mask;       //will produce the correct result. Dont touch any other bits
     }
     return;
 }
 
-void clear(){
+void clear(){  //Clear display
   int i;
   for (i = 0; i < 512; i++){
     display[i] = 255;
@@ -358,7 +356,7 @@ void clear(){
   return;
 }
 
-void border(){
+void border(){  //Make border 
   int i;
   for (i = 0; i < 512; i++){
     display[i] = 255;
@@ -379,30 +377,62 @@ void border(){
   } 
   return;
 }
+
  
-void moveSnake(struct Snake *snake) {
-  int x = snake->x[snake->length - 1];
-  int y = snake->y[snake->length - 1];
+int seed(int min, int max){
+  return  TMR1 % (max - min + 1) + min;
+}  
+
+
+
+void moveSnake(struct Snake *snake, struct Apple *apple) {
+  int headx = snake->x[snake->length - 1]; //Get the head x cord
+  int heady = snake->y[snake->length - 1]; //Get the head y cord
+  int len = snake->length-1;
   switch (snake->direction) {
     case 0:
-      y--;
+      heady--;
       break;
     case 1:
-      x++;
+      headx++;
       break;
     case 2:
-      y++;
+      heady++;
       break;
     case 3:
-      x--;
+      headx--;
       break;
   }
-  if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
-    // Snake hit the edge, game over
+  
+  if (headx < 1 || headx >= WIDTH-1 || heady < 1 || heady >= HEIGHT-1) {
+    gamedone = 1;
     return;
   }
-  drawpixel(x, y, 1);
-  snake->x[snake->length] = x;
-  snake->y[snake->length] = y;
-  snake->length++;
+  int check = 0;
+  //while (snake->x[check++] != 0){
+
+  //}
+
+  if ((apple->x == headx) && (apple->y == heady)){
+    //snake->x[snake->length] = headx;   //Set head x when grown
+    //snake->y[snake->length] = heady;   //Set head y when grown
+    snake->length++;
+    len++; //Increase the len to make sure the snake grows
+    PORTE = PORTE+1; //Increase the LEDS to show score 
+    apple->x = seed(2, 126); 
+    apple->y = seed(2,30);
+    drawpixel(apple->x, apple->y, 1);
+  }
+  else {
+    int cur = 0;
+    drawpixel(snake->x[0], snake->y[0], 0); //Remove tail
+    while (snake->x[cur++] != 0){
+      snake->x[cur-1] = snake->x[cur];
+      snake->y[cur-1] = snake->y[cur];
+    }
+  }
+  drawpixel(headx, heady, 1);  //Draw the new head
+  snake->x[len] = headx;   //Set head x is increased by len++ incase snake eats apple. 
+  snake->y[len] = heady;   //Set head y default case is that snake has not eaten apple.
 }
+
