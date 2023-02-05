@@ -68,6 +68,8 @@ int getsw2(void);
 int getsw1(void);
 
 int gamedone;
+int seedvalue;
+int randval;
 
 //Declare display array
 
@@ -76,9 +78,11 @@ struct Snake {          //Define each segment of the snake
   int y[512];            //Y pos
   int length;           //Each segment has their own properties 
   int direction;        //Each segment has their direction since they have to follow where the head went
+  int appleAte;
   };
 
 struct Apple {
    int x;
    int y;
 };
+

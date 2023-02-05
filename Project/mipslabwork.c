@@ -14,7 +14,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
 
 
@@ -25,6 +25,8 @@ struct Snake snake;
 struct Apple apple;
 struct Apple apple2;
 struct Apple apple3;
+
+void *stdout = (void *)0;
 
 int mytime = 0x5957;
 
@@ -46,7 +48,7 @@ void user_isr( void )
 void gameinit( void )
 {
   TRISE = TRISE & 0xFF00;
-  PORTE = PORTE & 0x0;
+  PORTE = 0x0;
   TRISD = (TRISD | 0xFE0);
   
   T2CON = 0x0;        //Stop the timer
@@ -60,6 +62,7 @@ void gameinit( void )
   PR2 = 312500;        //312 500KHz timer. PR = 312k Meaning 1000s a second
 
   gamedone = 0;  
+  randval = 0;
   clear();
   border();
 
@@ -68,51 +71,60 @@ void gameinit( void )
 	snake.y[0] = 16;
 	snake.length = 1;
 	snake.direction = 1;
-  
+  snake.appleAte = 0;
+    
+
   //Apple init
-  apple.x = 64;
-  apple.y = 20; 
-  drawpixel(apple.x, apple.y, 1);  
+  appleInit(&apple);
+   if (getsw3()){
+    appleInit(&apple2);
+    appleInit(&apple3);
+   }
+
+  
 }
 
 /*This function is called repetitively from the main program */
 void gamemain( void )
 {
-  //timeoutcount = 0; //Reset timeoutcount in order to make pause and gameover less annoying
+  
+  getEat(&snake, &apple);
+  if (getsw3()){            //Fun mode
+    getEat(&snake, &apple2);
+    getEat(&snake, &apple3);
+  }
+
   if (getbtn4()) //Direction 3 means left
   {  
-  T1CONSET = 0x0; //Turn off the timer 
   snake.direction = 3; 
   }
 
   if (getbtn3()) //Direction 1 means right
   { 
-  T1CONSET = 0x0; //Turn off the timer 
   snake.direction = 1;
   }
   
   if (getbtn2())  //Up
   {
-    T1CONSET = 0x0; //Turn off the timer 
     snake.direction = 2; 
   }
 
   if (getbtn1()) //Down
   {
-    T1CONSET = 0x0; //Turn off the timer 
     snake.direction = 0;
   }
 
   if (getsw2()){        //Speed mode
-     PR2 = 6125;        //80mhz / 256 = 5x faster
+     PR2 = 612;         //80mhz / 256 = 5x faster
   } else {
-    PR2 = 31250;
+    PR2 = 3125;
   }
   if(IFS(0) & 256){   //Bit 8 is the flag for interrupt
     timeoutcount++;
     IFSCLR(0) = 256;   //reset bit 8 in IFS0
   }
-  if(timeoutcount == 2){
+
+  if(timeoutcount == 10){
     moveSnake(&snake, &apple);
     display_image(0,display);
     timeoutcount = 0;
@@ -126,7 +138,7 @@ void pause(){
 	  display_string(3, "");
 	  display_update();
     while (getsw1() == 1){  //Keeps pause responsive without making screen flutter
-      delay(200); 
+      delay(100); 
     }
 }
   
@@ -135,13 +147,14 @@ void gameoverfunc(){
     gamedone = 0;
     gameinit();
   } else {
-    display_string(0, "     GAME");
-	  display_string(1, "     OVER");
+    display_string(0, " GAME OVER ");
+	  display_string(1, " LED = SCORE ");
 	  display_string(2, "PRESS ANY BTN ");
 	  display_string(3, " TO RESTART");
 	  display_update();
-    while (getbtns() == 0x0 && getbtn1 == 0x0){   //Keeps gameover responsive without making screen flutter
-        delay(200);  
+    delay( 200 );
+    while (getbtns() == 0x0 && getbtn1() == 0x0){   //Keeps gameover responsive without making screen flutter
+        delay(100);  
     } 
     gamedone = 0;
     gameinit();

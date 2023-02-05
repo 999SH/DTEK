@@ -14,7 +14,7 @@ LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 # Compiler and linker flags
 CFLAGS		+= -march=mips32r2 -msoft-float -Wa,-msoft-float -ffreestanding
 ASFLAGS		+= -msoft-float
-LDFLAGS		+= -lc -T $(LINKSCRIPT) 
+LDFLAGS		+= -T $(LINKSCRIPT) -lc 
 
 # Filenames
 ELFFILE		= $(PROGNAME).elf

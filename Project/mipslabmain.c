@@ -67,7 +67,7 @@ int main(void) {
 	
 
 	display_string(0, "SW4 = I-RSTRT");
-	display_string(1, "SW3 = ");
+	display_string(1, "SW3 = FUN MODE");
 	display_string(2, "SW2 = SUPERFAST ");
 	display_string(3, "SW1 = PAUSE ");
 	display_update();

@@ -8,7 +8,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-#include <stdio.h>
+//#include <stdio.h>
 
 
 /* Declare a helper function which is local to this file */
@@ -380,12 +380,26 @@ void border(){  //Make border
 
  
 int seed(int min, int max){
-  return  TMR1 % (max - min + 1) + min;
-}  
+  return  (rand(TMR1) % (max - min + 1) + min);
+  }  
 
+void appleInit(struct Apple *apple){
+  apple->x = seed(2, 126);
+  apple->y = seed(2, 30);
+  drawpixel(apple->x, apple->y, 1);  
+}
 
+void getEat(struct Snake *snake, struct Apple *apple){
+  if ((apple->x == snake->x[snake->length-1]) && (apple->y == snake->y[snake->length-1])){
+    PORTE = PORTE+1; //Increase the LEDS to show score 
+    snake->appleAte = 1;  //Set apple ate to 1 
+    apple->x = seed(2, 126); //Spawn new apple
+    apple->y = seed(2,30);
+    drawpixel(apple->x, apple->y, 1);  //Show the new apple 
+  }
+} 
 
-void moveSnake(struct Snake *snake, struct Apple *apple) {
+void moveSnake(struct Snake *snake) {
   int headx = snake->x[snake->length - 1]; //Get the head x cord
   int heady = snake->y[snake->length - 1]; //Get the head y cord
   int len = snake->length-1;
@@ -409,24 +423,21 @@ void moveSnake(struct Snake *snake, struct Apple *apple) {
     return;
   }
   int check = 0;
-  //while (snake->x[check++] != 0){
-
-  //}
-
-  if ((apple->x == headx) && (apple->y == heady)){
-    //snake->x[snake->length] = headx;   //Set head x when grown
-    //snake->y[snake->length] = heady;   //Set head y when grown
+  for (check = 0; check < len; check++){
+    if ((headx == snake->x[check]) && (heady == snake->y[check])){
+      gamedone = 1;
+      return;
+      }
+    }
+  if (snake->appleAte){
+    snake->appleAte = 0;
     snake->length++;
     len++; //Increase the len to make sure the snake grows
-    PORTE = PORTE+1; //Increase the LEDS to show score 
-    apple->x = seed(2, 126); 
-    apple->y = seed(2,30);
-    drawpixel(apple->x, apple->y, 1);
   }
   else {
     int cur = 0;
     drawpixel(snake->x[0], snake->y[0], 0); //Remove tail
-    while (snake->x[cur++] != 0){
+    while (snake->x[cur++] != 0){           //Move snake x[cur] to cur-1 in order to move all snake parts 1
       snake->x[cur-1] = snake->x[cur];
       snake->y[cur-1] = snake->y[cur];
     }
