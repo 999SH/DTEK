@@ -7,17 +7,6 @@
 
 int counter = 0;
 
-int is_prime(int n){
-  int i = 2;
-  while (i < n){
-    if (n%i == 0){
-      return 0;
-    }
-    i++;
-  }
-  return 1;
-}
-
 void print_number(int a){  
   if (counter >= COLUMNS){
     printf("\n");
@@ -29,7 +18,7 @@ void print_number(int a){
 
 
 void print_sieves(int n){
-    int *arr = (int*) malloc(sizeof(int)*n);
+    char *arr = (char*) malloc(sizeof(char)*n);
     int i = 2;
     int sqrtn = sqrt((int)n);
     while (i < n){ //fill array
@@ -44,7 +33,9 @@ void print_sieves(int n){
             increment = j;
             while (increment < n){ 
                 increment = increment+arr[j];
-                arr[increment] = 0;
+                if (increment < n){
+                  arr[increment] = 0;
+                }
             }
         }
         j++;

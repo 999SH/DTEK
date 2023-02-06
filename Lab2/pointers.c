@@ -3,8 +3,8 @@
 char *text1 = "This is a string.";
 char *text2 = "Yet another thing.";
 
-int *list1[20]; // 80 bytes = 20 ints
-int *list2[20]; //
+int list1[20]; // 80 bytes = 20 ints
+int list2[20]; //
 
 int count = 0; // counter declared here
 
@@ -27,7 +27,7 @@ void endian_proof(const char *c)
 
 void copycodes(char *text, int *list, int *count)
 {
-  while (*text != NULL)
+  while (*text != 0)
   {
     *list = *text; // load byte from text(dereference), then store word (dereference) into list
     text = text + 1; // Increment adress by 1 byte due to char size

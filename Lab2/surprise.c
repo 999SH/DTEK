@@ -16,7 +16,10 @@ void print_number(int a){
 
 
 void print_sieves(int n){
-    char arr[n];
+    int arg = n;
+    n = n*n;
+    int primeindex = 0;
+    int arr[n];
     int i = 2;
     int sqrtn = sqrt((int)n);
     while (i < n){ //fill array
@@ -40,7 +43,10 @@ void print_sieves(int n){
     }
     for (int y = 2; y < n; y++){
         if(arr[y] != 0){
-            print_number(y);
+            primeindex++;
+            if (primeindex == arg){
+                print_number(y);
+            }
         }
     }  
 }

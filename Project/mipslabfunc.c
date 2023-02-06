@@ -436,14 +436,14 @@ void moveSnake(struct Snake *snake) {
   }
   else {
     int cur = 0;
-    drawpixel(snake->x[0], snake->y[0], 0); //Remove tail
-    while (snake->x[cur++] != 0){           //Move snake x[cur] to cur-1 in order to move all snake parts 1
-      snake->x[cur-1] = snake->x[cur];
-      snake->y[cur-1] = snake->y[cur];
+    drawpixel(snake->x[0], snake->y[0], 0); //Set the previous tail pixel to 0 since we are moving away from it
+    while (snake->x[cur++] != 0){           //Move snake x[cur] to cur-1 in order to make sure all snake locations are moved one step,
+      snake->x[cur-1] = snake->x[cur];      //x0 .. xn still holds tail and head, but every position has new coordinates,
+      snake->y[cur-1] = snake->y[cur];      //
     }
   }
   drawpixel(headx, heady, 1);  //Draw the new head
-  snake->x[len] = headx;   //Set head x is increased by len++ incase snake eats apple. 
-  snake->y[len] = heady;   //Set head y default case is that snake has not eaten apple.
+  snake->x[len] = headx;       //Set head x. It is increased by len++ if snake eats apple.
+  snake->y[len] = heady;       //Set head y. default case is that snake has not eaten apple.
 }
 
