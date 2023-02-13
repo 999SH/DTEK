@@ -33,12 +33,12 @@ void user_isr( void )
 void labinit( void )
 {
   *TE = (*TE & 0xFF00);
-  *PE = (*TE & 0x0);
+  *PE = (0x0);
   TRISD = (TRISD | 0xFE0);
   
   T2CON = 0x0;     //Stop the timer
-  T2CONSET = 0x8070;  // Set prescaling to max and turn timer on 
   TMR2 = 0x0;      //Reset the timer to 0
+  T2CONSET = 0x8070;  // Set prescaling to max and turn timer on 
   PR2 = 31250;      //80mhz / 256 / 10
 
   return;
@@ -63,13 +63,14 @@ void labwork( void )
     mytime = 0xFF0F & mytime; 
     mytime = (getsw() << 4 | mytime); 
   }
-  *PE = *PE+1;
+  
 
   if(IFS(0) & 256){   //Bit 8 is the flag for interrupt
     timeoutcount++;
     IFSCLR(0) = 256;   //reset bit 8 in IFS0
   }
   if(timeoutcount == 10){
+    *PE = *PE+1;
     time2string( textstring, mytime );
     display_string( 3, textstring );
     display_update();

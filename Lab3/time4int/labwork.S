@@ -25,8 +25,9 @@
 mytime:	.word 0x5957
 timstr:	.ascii "text more text lots of text\0"
 .globl time2string
+.globl hexasc
 .globl delay
-
+.globl enable_interrupt
 
 
 .text
@@ -132,7 +133,7 @@ delayreturn:
   jr $ra
   nop                             
 
-#Stop just because
-
-     stop: j stop
-      nop  
+enable_interrupt:
+    ei
+    jr  $ra
+    nop

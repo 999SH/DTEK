@@ -30,28 +30,39 @@ void user_isr( void )
   if(IFS(0) & 256){                //Bit 8 is the flag for interrupt
     timeoutcount++;
     IFSCLR(0) = 256;               //Clear flag in bit 8 
-    if(timeoutcount == 10){    
+  }
+  if(IFS(0) & 128){
+    IFSCLR(0) = 128;
+    *PE = *PE + 1; 
+  }
+   if(timeoutcount == 10){    
       time2string( textstring, mytime );
       display_string( 3, textstring );
       display_update();
       tick( &mytime );
       timeoutcount = 0;
     }
-  }
+   
 }
 
 /* Lab-specific initialization goes here */
 void labinit( void )
 {
   *TE = (*TE & 0xFF00);      //Set lower 8 bits to 0 (Set port e lower 8 bits to output(0))
-  *PE = (*PE & 0x0);         //Set all bits to 0  (LEDS)
+  *PE = 0x0;         //Set all bits to 0  (LEDS)
   TRISD = (TRISD | 0xFE0);   //Set MSB to 1 for bits 11-5 (inputs) 
   T2CON = 0x0;               //Stop the timer
-  T2CONSET = 0x70;           // Set prescaling to max Decided by bits  
-  TMR2 = 0x0;                //Reset the timer to 0
-  PR2 = 31250;      //80mhz / 256 / 10
+  TMR2 = 0;                 //Reset the timer to 0
+  T2CONSET = 0x8070;         //Set prescaling to max and turn timer on 
+  PR2 = 31250;              //80mhz / 256 / 10
   IECSET(0) = 256;     //Enable interrupt timer 2 bit 8
-  IPCSET(2) = 31;      //Priority and sub priority max
+  IPCSET(2) = 31;      //Priority and sub priority max 111 11
+                       //Enable interrupt timer 2 bit 8
+  //Surprise part
+  IECSET(0) = (128+256);   //Enable  INT1  
+  IPCSET(1) = 0x1b00;  //Set priority to less than timer 2 (110 11 0000 0000)
+  IFSCLR(0) = 0xFFFF; 
+
   enable_interrupt();
   return;
 }

@@ -31,7 +31,7 @@ void user_isr( void )
 void labinit( void )
 {
   *TE = (*TE & 0xFF00);
-  *PE = (*PE & 0x0);
+  *PE = (0x0);
   TRISD = (TRISD | 0xFE0);
   return;
 }
@@ -63,9 +63,7 @@ void labwork( void )
   tick( &mytime );
   display_image(96, icon);
   *PE = *PE+1;
-  if (*PE == 256){
-    *PE = 0;
-  }
+  
   
   
   return;
