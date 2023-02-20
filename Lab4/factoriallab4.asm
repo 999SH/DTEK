@@ -1,12 +1,10 @@
 .text
 
-addi $a0,$0, 4     #set n
-add $v0 $0, $0	   #Clear v0
+addi $a0,$0, 5     #set n
+addi $v0 $0, 1	   #Clear #Set v0 to 1 since it doesnt work otherwise
 
 beq $a0, $0, stop #beq if n = 0
 add $0,$0,$0	   # NOP
-
-addi $v0, $0, 1	#Set v0 to 1 since it doesnt work otherwise
 
 beq $a0, $v0, stop #beq if n = 1
 add $0,$0,$0	   # NOP
