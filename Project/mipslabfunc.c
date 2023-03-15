@@ -335,11 +335,11 @@ char * itoaconv( int num )
 
 
 void drawpixel(int x, int y, int state) {    //State of 1 means the pixel is turned on
-    int byte = (y/8) * 128 + x;         //Formula for calculating the byte, first calulate row using y/8,
-    int bit = y % 8;                    //Byterow * 128 in order to calculate with offset. 
-    if(state){                          //32 y cords, 8 pixels per byte. Modulo 8 chooses the correct bit in the byte      
-      uint8_t mask = ~(1 << bit);       //Sets the bit we want to turn on to 0, everything else is ANDed with 1. since 0 means on.
-      display[byte] &= mask;            //Uint_8 is one byte big, exactly the correct size
+    int byte = (y/8) * 128 + x;              //Formula for calculating the byte, first calulate row using y/8,
+    int bit = y % 8;                         //Byterow * 128 in order to calculate with offset. 
+    if(state){                               //32 y cords, 8 pixels per byte. Modulo 8 chooses the correct bit in the byte      
+      uint8_t mask = ~(1 << bit);            //Sets the bit we want to turn on to 0, everything else is ANDed with 1. since 0 means on.
+      display[byte] &= mask;                 //Uint_8 is one byte big, exactly the correct size
     }
     else{
       uint8_t mask = 1 << bit;     //set the masked bit to 1 in order to guarantee that the OR

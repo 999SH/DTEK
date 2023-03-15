@@ -56,7 +56,7 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 	
 	display_init();
-	/*
+	
 	display_string(0, "Welcome");
 	display_string(1, "to snake");
 	display_string(2, "by Viktor");
@@ -81,7 +81,7 @@ int main(void) {
 	display_update();
 
 	delay( 5000 );
-	*/
+	
 
 	gameinit(); /* Do any lab-specific initialization */
 

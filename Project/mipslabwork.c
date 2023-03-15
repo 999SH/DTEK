@@ -87,7 +87,6 @@ void gameinit( void )
 /*This function is called repetitively from the main program */
 void gamemain( void )
 {
-  
   getEat(&snake, &apple);
   if (getsw3()){            //Fun mode
     getEat(&snake, &apple2);
