@@ -334,62 +334,71 @@ char * itoaconv( int num )
 
 
 
-void drawpixel(int x, int y, int state) {    //State of 1 means the pixel is turned on
+void drawpixel(int x, int y, int state) {
+					     //State of 1 means the pixel is turned on
     int byte = (y/8) * 128 + x;              //Formula for calculating the byte, first calulate row using y/8,
     int bit = y % 8;                         //Byterow * 128 in order to calculate with offset. 
-    if(state){                               //32 y cords, 8 pixels per byte. Modulo 8 chooses the correct bit in the byte      
+    if (state) {                             //32 y cords, 8 pixels per byte. Modulo 8 chooses the correct bit in the byte      
       uint8_t mask = ~(1 << bit);            //Sets the bit we want to turn on to 0, everything else is ANDed with 1. since 0 means on.
       display[byte] &= mask;                 //Uint_8 is one byte big, exactly the correct size
-    }
-    else{
+    } else {
       uint8_t mask = 1 << bit;     //set the masked bit to 1 in order to guarantee that the OR
       display[byte] |= mask;       //will produce the correct result. Dont touch any other bits
     }
+	
     return;
 }
 
 void clear(){  //Clear display
   int i;
+	
   for (i = 0; i < 512; i++){
     display[i] = 255;
   }
+	
   return;
 }
 
 void border(){  //Make border 
   int i;
+	
   for (i = 0; i < 512; i++){
     display[i] = 255;
   }
+	
   display[0] = 0;
   display[127] = 0;
+	
   for (i = 1; i < 127; i++){
     display[i] = 254;
   }
+	
   display[128] = 0;
   display[255] = 0;
   display[256] = 0;
   display[383] = 0;
   display[384] = 0;
   display[511] = 0;
+	
   for (i = 385; i < 511; i++){
     display[i] = 127;
   } 
+	
   return;
 }
 
  
-int seed(int min, int max){
+int seed(int min, int max) {
   return  (rand(TMR1) % (max - min + 1) + min);
-  }  
+}  
 
-void appleInit(struct Apple *apple){
+void appleInit(struct Apple *apple) {
   apple->x = seed(2, 126);
   apple->y = seed(2, 30);
   drawpixel(apple->x, apple->y, 1);  
 }
 
-void getEat(struct Snake *snake, struct Apple *apple){
+void getEat(struct Snake *snake, struct Apple *apple) {
   if ((apple->x == snake->x[snake->length-1]) && (apple->y == snake->y[snake->length-1])){
     PORTE = PORTE+1; //Increase the LEDS to show score 
     snake->appleAte = 1;  //Set apple ate to 1 
@@ -400,9 +409,11 @@ void getEat(struct Snake *snake, struct Apple *apple){
 } 
 
 void moveSnake(struct Snake *snake) {
+	
   int headx = snake->x[snake->length - 1]; //Get the head x cord
   int heady = snake->y[snake->length - 1]; //Get the head y cord
   int len = snake->length-1;
+	
   switch (snake->direction) {
     case 0:
       heady--;
@@ -422,26 +433,27 @@ void moveSnake(struct Snake *snake) {
     gamedone = 1;
     return;
   }
+	
   int check = 0;
-  for (check = 0; check < len; check++){
-    if ((headx == snake->x[check]) && (heady == snake->y[check])){
-      gamedone = 1;
-      return;
+  for (check = 0; check < len; check++) {
+      if ((headx == snake->x[check]) && (heady == snake->y[check])){
+          gamedone = 1;
+          return;
       }
-    }
+  }
   if (snake->appleAte){
     snake->appleAte = 0;
     snake->length++;
     len++; //Increase the len to make sure the snake grows
+  } else {
+      int cur = 0;
+      drawpixel(snake->x[0], snake->y[0], 0); //Set the previous tail pixel to 0 since we are moving away from it
+      while (snake->x[cur++] != 0){           //Move snake x[cur] to cur-1 in order to make sure all snake locations are moved one step,
+          snake->x[cur-1] = snake->x[cur];      //x0 .. xn still holds tail and head, but every position has new coordinates,
+          snake->y[cur-1] = snake->y[cur];      //
+      }
   }
-  else {
-    int cur = 0;
-    drawpixel(snake->x[0], snake->y[0], 0); //Set the previous tail pixel to 0 since we are moving away from it
-    while (snake->x[cur++] != 0){           //Move snake x[cur] to cur-1 in order to make sure all snake locations are moved one step,
-      snake->x[cur-1] = snake->x[cur];      //x0 .. xn still holds tail and head, but every position has new coordinates,
-      snake->y[cur-1] = snake->y[cur];      //
-    }
-  }
+	
   drawpixel(headx, heady, 1);  //Draw the new head
   snake->x[len] = headx;       //Set head x. It is increased by len++ if snake eats apple.
   snake->y[len] = heady;       //Set head y. default case is that snake has not eaten apple.
