@@ -86,24 +86,24 @@ int main(void) {
 	gameinit(); /* Do any lab-specific initialization */
 
 
-	while( 1 )
-	{
-		switch (getsw1()){
-			case 0: 
-			gamemain();
-			break;
-			case 1:
-			pause();
-			break;
-		}
-		switch (gamedone){
-			case 0:
-			gamemain();
-			break;
-			case 1: 
-			gameoverfunc();
-			break;
-		}
+	while( 1 ) {
+	    switch (getsw1()){
+	    	case 0: 
+	    	    gamemain();
+	    	    break;
+	    	case 1:
+	    	    pause();
+	    	    break;
+	    }
+	    switch (gamedone){
+	        case 0:
+		    gamemain();
+		    break;
+	    	case 1: 
+		    gameoverfunc();
+		    break;
+	    }
 	}
+	
 	return 0;
 }
